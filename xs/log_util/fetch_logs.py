@@ -14,10 +14,13 @@ def make_url(prefix, url):
 def fetch_log(url):
     url = url.rstrip('/')
     filename = os.path.basename(url)
-    print 'Downloading %s -> %s' % (url, filename)
-    r = requests.get(url)
+    print 'Downloading %s => %s' % (url, filename)
+    r = requests.get(url, stream=True)
     with open(filename, 'wb') as f:
-        f.write(r.content)
+        f.write(r.raw)
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:
+                f.write(chunk)
 
 
 def main():
