@@ -14,10 +14,12 @@ def make_url(prefix, url):
 def fetch_log(url):
     url = url.rstrip('/')
     filename = os.path.basename(url)
+    # requests automatilly decompress the response
+    if filename.endswith('.gz'):
+        filename = os.path.splitext(filename)[0]
     print 'Downloading %s => %s' % (url, filename)
     r = requests.get(url, stream=True)
     with open(filename, 'wb') as f:
-        f.write(r.raw)
         for chunk in r.iter_content(chunk_size=1024):
             if chunk:
                 f.write(chunk)
